@@ -23,3 +23,4 @@ COPY ocr_pipeline.py .
 COPY README.md .
 
 EXPOSE 5001
+CMD gunicorn dash_app:server

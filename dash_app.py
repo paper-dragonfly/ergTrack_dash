@@ -6,9 +6,7 @@ import requests
 import dash_fns as dfx
 import pdb
 import os 
-from dotenv import load_dotenv
 
-load_dotenv()
 
 app = Dash(__name__,external_stylesheets=[dbc.themes.SANDSTONE], use_pages=True)
 server = app.server
