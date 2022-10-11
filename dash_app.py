@@ -68,5 +68,10 @@ def choose_page(username='None'):
         ]
     return pages
 
-if __name__ == '__main__' and os.getenv('ENVIRONMENT') != 'production':
-    app.run('localhost', 5001, debug=True )
+ENV = os.getenv('ENVIRONMENT')
+
+if __name__ == '__main__' and ENV != 'production':
+    if ENV == 'dev_docker':
+        app.run('0.0.0.0', 5001)
+    else: 
+        app.run('localhost', 5001, debug=True )
