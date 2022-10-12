@@ -1,8 +1,7 @@
-from dash_fns import calc_av_rest, check_hr_formatting, check_rest_formatting, check_sr_formatting, find_team_id, find_wo_name, format_and_post_intervals, generate_post_wo_dict2, get_name, get_wo_details, post_new_team, post_newuser, check_date, check_duration, reformat_date, seconds_to_duration, validate_form_inputs, duration_to_seconds, wo_details_df
 import pdb
-from dash_fns import get_usernames, flask_client_get as client_get, flask_client_post as client_post, get_id
-from src.logic import db_connect
-from tests.conftest import clear_test_db
+from ergTrack_dash.dash_fns import calc_av_rest, check_hr_formatting, check_rest_formatting, check_sr_formatting, find_team_id, find_wo_name, format_and_post_intervals, generate_post_wo_dict2, get_name, get_wo_details, post_new_team, post_newuser, check_date, check_duration, reformat_date, seconds_to_duration, validate_form_inputs, duration_to_seconds, wo_details_df, get_usernames, flask_client_get as client_get, flask_client_post as client_post, get_id
+from ergTrack_api.src.api_ergTrack.logic import db_connect
+from ergTrack_dash.tests.conftest import clear_test_db
 
 
 def test_00_populate_test_db():
