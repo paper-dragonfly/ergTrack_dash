@@ -9,16 +9,7 @@ import os
 
 
 app = Dash(__name__,external_stylesheets=[dbc.themes.SANDSTONE], use_pages=True)
-server = app.server
-
-
-# def get_usernames():
-#     # user_names = dfx.get_usernames()
-#     # if len(user_names) == 0:
-#     #     user_names = ['None']
-#     user_names = ['jaja']
-#     return user_names
-# user_names=get_usernames()   
+server = app.server  
 
 # Layout
 app.layout = dbc.Container([
