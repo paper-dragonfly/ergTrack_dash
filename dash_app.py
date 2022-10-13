@@ -27,10 +27,9 @@ app.layout = dbc.Container([
             value="None", 
             id='user_dropdown'),
         dbc.Button(
-            children='Refresh', 
+            children='⟳', 
             id='btn_ref',
             color='light',
-            # outline=True,
             size='sm', 
             n_clicks=0),
         dbc.DropdownMenu(
