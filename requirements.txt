@@ -15,5 +15,7 @@ pytest
 pytest-mock
 python-dotenv
 pyYAML
+regex
 requests
+
 
