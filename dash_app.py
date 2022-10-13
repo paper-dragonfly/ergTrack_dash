@@ -12,34 +12,45 @@ app = Dash(__name__,external_stylesheets=[dbc.themes.SANDSTONE], use_pages=True)
 server = app.server
 
 
-user_names = dfx.get_usernames()
-if len(user_names) == 0:
-    user_names = ['None']
+def get_usernames():
+    user_names = dfx.get_usernames()
+    if len(user_names) == 0:
+        user_names = ['None']
+    return user_names
 
 # Layout
 app.layout = dbc.Container([
     dbc.NavbarSimple([
-        dcc.Store(id='user_names', data=['None']),
-        dcc.Dropdown(options=user_names, value="None", id='user_dropdown'),
+        # dcc.Store(id='user_names', data=['None']),
+        dcc.Dropdown(
+            options=get_usernames(), 
+            value="None", 
+            id='user_dropdown'),
+        dbc.Button(
+            children='Refresh', 
+            id='btn_ref',
+            color='light',
+            # outline=True,
+            size='sm', 
+            n_clicks=0),
         dbc.DropdownMenu(
             children=None,
             id='page_menu',
             nav=True,
-            label= 'Menu')
+            label= 'Menu',
+            in_navbar=True)
         ]),
     page_container 
 ])
 
-#Callback 
+# Callbacks 
 
 @app.callback(
-    Output('user_names', 'data'),
-    Input('user_dropdown', 'value')
+    Output('user_dropdown', 'options'),
+    Input('btn_ref', 'n_clicks')
 )
-def reload_names(user='None'):
-    user_names = dfx.get_usernames()
-    if len(user_names) == 0:
-        return ['None']
+def reload_names(n_clicks):
+    user_names = get_usernames()
     return user_names
 
 
