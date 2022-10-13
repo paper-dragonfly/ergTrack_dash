@@ -1,14 +1,14 @@
-from ergTrack_dash.tests.conftest import app
-from ergTrack_dash.dash_app import app as dash_app
-from ergTrack_dash.pages.workout_log import activate_view_details
+from tests.conftest import app
+from dash_app import app as dash_app
+from pages.workout_log import activate_view_details
 import cv2
-from ergTrack_dash.pages.add_image import extract_ocr, fill_form, EMPTY_INTERVAL_TABLE, post_wo_to_db, stage_interval
+from pages.add_image import extract_ocr, fill_form, EMPTY_INTERVAL_TABLE, post_wo_to_db, stage_interval
 from pytest import raises
-from ergTrack_dash.dash_fns import flask_client_get as client_get, flask_client_post as client_post, reformat_date
-from ergTrack_api.tests.test_logic import db_connect
-import ergTrack_dash.tests.conftest as c
+from dash_fns import flask_client_get as client_get, flask_client_post as client_post, reformat_date
+from api_ergTrack.logic import db_connect
+import tests.conftest as c
 import pdb
-from ergTrack_dash.pages.new_user import populate_team_dropdown, display_team_input, set_user_team, submit_user
+from pages.new_user import populate_team_dropdown, display_team_input, set_user_team, submit_user
 from dash.exceptions import PreventUpdate
 
 # KEY

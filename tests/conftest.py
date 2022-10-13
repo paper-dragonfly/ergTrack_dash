@@ -1,7 +1,7 @@
 import pytest
-from ergTrack_api.src.api_ergTrack.app import create_app
-from ergTrack_api.src.api_ergTrack.logic import db_connect 
-# from ergTrack_api.tests.test_logic import db_connect
+from api_ergTrack.app import create_app
+from api_ergTrack.logic import db_connect 
+# from api_ergTrack.tests.test_logic import db_connect
 import pdb
 
 app = create_app('testing')

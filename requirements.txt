@@ -8,8 +8,12 @@ opencv-python
 pandas
 Pillow
 plotly
+psycopg2-binary
+pydantic
 pytesseract
 pytest
+pytest-mock
 python-dotenv
+pyYAML
 requests
 
