@@ -37,6 +37,7 @@ def layout(user_id=1):
     return dbc.Container([
         dcc.Store(id='user_id', data=user_id),
         dcc.Markdown('# Add Workout'),
+        # Radio Select
         dcc.RadioItems(options=['Single Time/Distance','Intervals'], value='Single Time/Distance', id='radio_select'),
         dbc.Row([
         # Upload + Display image
@@ -116,7 +117,7 @@ def upload_img(contents, filename, date):
             # HTML images accept base64 encoded strings in the same format
             # that is supplied by the upload
             html.Img(src=contents,id='erg_pic'),
-            html.Hr()
+            html.Hr() #horizontal line
             ])
         return children, base64_img
 
@@ -165,7 +166,7 @@ def extract_ocr(image):
 )
 def fill_form(raw_ocr, n_clicks, formatted, radio, date, df):
     if not raw_ocr:
-        raise PreventUpdate 
+        raise PreventUpdate #TODO: change this to allow manual input
     num_ints = len(raw_ocr['time'])
     print('num ints', num_ints)
     hr = 'n/a'
@@ -173,7 +174,7 @@ def fill_form(raw_ocr, n_clicks, formatted, radio, date, df):
     if radio == 'Intervals':
         rest = None  
     if n_clicks == 0: 
-        if len(raw_ocr['summary']) == 5:
+        if len(raw_ocr['summary']) == 5: #HR is present in image
             hr = raw_ocr['summary'][4] 
         return raw_ocr['date'], raw_ocr['summary'][0], raw_ocr['summary'][1], raw_ocr['summary'][2], raw_ocr['summary'][3], hr, rest, num_ints
     # if len(df['Time']) == 0:

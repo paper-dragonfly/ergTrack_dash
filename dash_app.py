@@ -12,18 +12,20 @@ app = Dash(__name__,external_stylesheets=[dbc.themes.SANDSTONE], use_pages=True)
 server = app.server
 
 
-def get_usernames():
-    user_names = dfx.get_usernames()
-    if len(user_names) == 0:
-        user_names = ['None']
-    return user_names
+# def get_usernames():
+#     # user_names = dfx.get_usernames()
+#     # if len(user_names) == 0:
+#     #     user_names = ['None']
+#     user_names = ['jaja']
+#     return user_names
+# user_names=get_usernames()   
 
 # Layout
 app.layout = dbc.Container([
     dbc.NavbarSimple([
         # dcc.Store(id='user_names', data=['None']),
         dcc.Dropdown(
-            options=get_usernames(), 
+            options=['None'], 
             value="None", 
             id='user_dropdown'),
         dbc.Button(
@@ -49,7 +51,9 @@ app.layout = dbc.Container([
     Input('btn_ref', 'n_clicks')
 )
 def reload_names(n_clicks):
-    user_names = get_usernames()
+    print('ran reload_names')     
+    user_names = dfx.get_usernames()
+    print('user_names:', user_names)
     return user_names
 
 
@@ -76,7 +80,7 @@ def choose_page(username='None'):
         ]
     return pages
 
-ENV = os.getenv('ENVIRONMENT')
+ENV = os.getenv('ENV')
 
 if __name__ == '__main__' and ENV != 'production':
     if ENV == 'dev_docker':

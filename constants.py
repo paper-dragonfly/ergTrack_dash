@@ -1,7 +1,7 @@
 import os
 import pdb
 
-ENV = os.getenv('ENVIRONMENT')
+ENV = os.getenv('ENV')
 
 def get_url(env):
     if env == 'dev_local' or env=='testing':

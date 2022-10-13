@@ -1,3 +1,4 @@
+# NOTE: NOT IN USE, USE ADD_IMAGE.PY
 import requests
 import pandas as pd
 import pdb
@@ -19,12 +20,12 @@ empty_post_intrvl_dict = {'workout_id':None,'time_sec':None,'distance':None,'spl
 
 def layout(user_id='1'):
     return dbc.Container([
-        #Radio Select
+        #Radio Select single/interval
         html.Div([
             dcc.Store(id='user_id', data=user_id),
             dcc.Markdown('## Add Workout - Single', id='head_wotype'),
             dcc.RadioItems(options=['Single Time/Distance','Intervals'], value='Single Time/Distance', id='radio_select'),
-        # user_input both
+        # user_input - same for single/interval
             dbc.Row([
                 dbc.Col(dbc.Label('Date',html_for='ui_date'), width=2),
                 dbc.Col(dcc.Input(placeholder='yyyy-mm-dd',id="ui_date", size='10',minLength=10, maxLength=10 ), width=4)
