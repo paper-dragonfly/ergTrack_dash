@@ -45,7 +45,7 @@ app.layout = dbc.Container([
 def reload_names(n_clicks):
     print('ran reload_names')     
     user_names = dfx.get_usernames()
-    print('user_names:', user_names)
+    print('user_names:', user_names, file=sys.stderr)
     return user_names
 
 

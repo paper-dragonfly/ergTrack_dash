@@ -1,3 +1,4 @@
+from sys import stderr
 import pandas as pd
 import pdb
 from dash import dcc, html, register_page, callback, Input, Output, State 
@@ -144,7 +145,7 @@ def extract_ocr(image):
     if image is not None: 
         image = np.array(image, dtype='uint8')
         raw_ocr = clean_ocr(image)
-        print(raw_ocr)
+        print(raw_ocr, file=stderr)
         return raw_ocr 
 
 
@@ -168,7 +169,7 @@ def fill_form(raw_ocr, n_clicks, formatted, radio, date, df):
     if not raw_ocr:
         raise PreventUpdate #TODO: change this to allow manual input
     num_ints = len(raw_ocr['time'])
-    print('num ints', num_ints)
+    print('num ints', num_ints, file=stderr)
     hr = 'n/a'
     rest = 'n/a'
     if radio == 'Intervals':
@@ -181,7 +182,7 @@ def fill_form(raw_ocr, n_clicks, formatted, radio, date, df):
     #     print('blocked by df len')
     #     raise PreventUpdate
     if not formatted:
-        print('blocked formatted  == False')
+        print('blocked formatted  == False', file=stderr)
         raise PreventUpdate 
     else:
         i = len(df['Time'])-1
@@ -222,6 +223,7 @@ def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head
     dont_display = {'display':'none'}
     blank_table=dbc.Table.from_dataframe(pd.DataFrame(df), striped=True, bordered=True)
     # check format of inputs
+    print('INPUTS: ', date, time, dist, split, sr, hr, rest, file=stderr)
     error_messages = validate_form_inputs(date, time, dist, split, sr, hr, rest)
     if error_messages:
         return head, blank_table, df, error_messages, display, False, dont_display

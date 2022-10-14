@@ -1,8 +1,10 @@
+from sys import stderr
 import requests
 import json
 import re
 from constants import ROOT_URL
 import pdb 
+import sys 
 
 # FLASK get+post for requests/client
 def flask_requests_get(url:str)->dict:
@@ -66,6 +68,7 @@ def post_new_interval(idict, post=flask_requests_post, post_args={}):
 # Check Formatting 
 def check_date(input_date:str)->dict: #'Jan 01 2000' -> yyyy-mm-dd
     if not input_date: #allow empty submission
+        print('no date inputted, empty accepted', file=stderr)
         return {'success':True, 'message': ""}
     reformat_result = reformat_date(input_date)
     if not reformat_result['success']:
@@ -208,8 +211,9 @@ def reformat_date(date:str)->dict: #'Apr 01 2022'
 #confirms input_date formatting is (three char abrev of month)+( )+(two digit day)+( )+(four digit year value). Validity of day and year are not checked here
     if len(re.findall("^[a-zA-Z]{3}\s([0-2][0-9]|[3][0-1])\s\d\d\d\d$",date)) != 1:
         error_message = 'Date formatting error: Must use first three letters of month followed by two digit day followed by 4 diget year e.g. Jan 01 2000'
-        print('length date: ', len(date), date)
+        print('length date: ', len(date), date, file=stderr)
         if len(date) != 11:
+            print('hitting date length error', file=stderr)
             error_message = 'Date formatting error: date length incorrect'
         return {'success':False, 'message': error_message}
     mm = date[:3].capitalize()
