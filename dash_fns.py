@@ -361,9 +361,9 @@ def wo_details_df(wo_id):
 ## OTHER
 def choose_title(radio, num_rows): #No test needed
     if radio == 'Intervals':
-        head = f'## Input Interval {num_rows-1}'
+        head = f'## Input Interval {num_rows}'
     else:
-        head = f'## Input Sub-Workout {num_rows-1}'
+        head = f'## Input Sub-Workout {num_rows}'
     return head  
 
 
