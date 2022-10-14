@@ -209,10 +209,14 @@ def seconds_to_duration(time_sec:float):
 
 def reformat_date(date:str)->dict: #'Apr 01 2022'
 #confirms input_date formatting is (three char abrev of month)+( )+(two digit day)+( )+(four digit year value). Validity of day and year are not checked here
+    datelist = [c for c in date] 
+    print('length date: ', len(date), datelist, file=stderr)
+    date = date.strip()
+    print('length date: ', len(date), datelist, file=stderr)
     if len(re.findall("^[a-zA-Z]{3}\s([0-2][0-9]|[3][0-1])\s\d\d\d\d$",date)) != 1:
         error_message = 'Date formatting error: Must use first three letters of month followed by two digit day followed by 4 digit year e.g. Jan 01 2000'
         datelist = [c for c in date] 
-        print('length date: ', len(date), datelist, file=stderr)
+        print('inside regex fail - length date: ', len(date), datelist, file=stderr)
         if len(date) != 11:
             print('hitting date length error', file=stderr)
             error_message = 'Date formatting error: date length incorrect'
