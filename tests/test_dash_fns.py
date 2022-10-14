@@ -101,6 +101,7 @@ def test_07_check_duration():
     assert check_duration('1:50.2','Split')['success'] == True
     assert check_duration('fire')['success']==False 
     assert check_duration('00:99:88.8')['success']== False 
+    assert check_duration('00.0')['success'] ==False 
 
 
 def test_08_check_sr_formatting():

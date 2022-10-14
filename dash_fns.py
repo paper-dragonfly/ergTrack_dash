@@ -107,6 +107,9 @@ def check_duration(input_dur:str, d_type='Time')->dict:
     blank = '00:00:00.0'
     short = 10 - len(input_dur)
     dur = blank[:short]+input_dur
+    # check duration isn't all zeros 
+    if dur == blank:
+        return {'success':False, 'message':f'{d_type} formatting error: value is zero'}
     correct = 'hh:mm:ss.d'
     if d_type == 'Split':
        correct = 'm:ss.d' 
