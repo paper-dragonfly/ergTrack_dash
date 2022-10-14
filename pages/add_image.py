@@ -53,7 +53,7 @@ def layout(user_id=1):
         # data form feilds
             dbc.Col([
                 dcc.Store(id='ocr_dict', data=None),
-                dcc.Markdown('## Workout Summery', id='h2_input_form'),
+                dcc.Markdown('## Workout Summary', id='h2_input_form'),
                 dbc.Row([
                     dbc.Col(dbc.Label('Date',html_for='ui_date2'), width=2),
                     dbc.Col(dcc.Input(placeholder='Jan 01 2000',id="ui_date2", size='20' ), width=4)
