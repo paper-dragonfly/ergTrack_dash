@@ -6,6 +6,7 @@ import requests
 import dash_fns as dfx
 import pdb
 import os 
+import sys
 
 
 app = Dash(__name__,external_stylesheets=[dbc.themes.SANDSTONE], use_pages=True)
@@ -72,6 +73,7 @@ def choose_page(username='None'):
     return pages
 
 ENV = os.getenv('ENV')
+print('ENV = ', ENV, file=sys.stderr)
 
 if __name__ == '__main__' and ENV != 'production':
     if ENV == 'dev_docker':
