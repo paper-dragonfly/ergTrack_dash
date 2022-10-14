@@ -177,10 +177,8 @@ def fill_form(raw_ocr, n_clicks, formatted, radio, date, df):
     if n_clicks == 0: 
         if len(raw_ocr['summary']) == 5: #HR is present in image
             hr = raw_ocr['summary'][4] 
-        return raw_ocr['date'], raw_ocr['summary'][0], raw_ocr['summary'][1], raw_ocr['summary'][2], raw_ocr['summary'][3], hr, rest, num_ints
-    # if len(df['Time']) == 0:
-    #     print('blocked by df len')
-    #     raise PreventUpdate
+        #.strip() removes leading and trailing white spaces
+        return raw_ocr['date'].strip(), raw_ocr['summary'][0].strip(), raw_ocr['summary'][1].strip(), raw_ocr['summary'][2].strip(), raw_ocr['summary'][3].strip(), hr, rest, num_ints
     if not formatted:
         print('blocked formatted  == False', file=stderr)
         raise PreventUpdate 
