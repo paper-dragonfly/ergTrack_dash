@@ -2,6 +2,15 @@ import cv2
 import pytesseract
 import numpy as np
 
+## Resize Image
+def resize(image):
+    hf = 500
+    wi = image.shape[1]
+    hi = image.shape[0]
+    wf = int(wi * hf/hi)
+    resized = cv2.resize(image, (wf, hf))
+    return resized 
+
 ## Image OCR
 def preprocess(image): #image
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -60,4 +69,4 @@ def basic_clean(ocr_dict:dict):
 
 #put ocr extraction into one func
 def clean_ocr(image):
-    return basic_clean(extract_data(snip(preprocess(image))))
+    return basic_clean(extract_data(snip(preprocess(resize(image)))))
