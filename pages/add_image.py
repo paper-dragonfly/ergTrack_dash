@@ -52,9 +52,9 @@ def layout(user_id=1):
                 dcc.Markdown('#### Workout Type'),
                 dcc.RadioItems(
                     options=['Single Distance', 'Single Time', 'Interval Distance', 'Interval Time'],
-                    value='Single Distance',
+                    value = 'Single Distance',
                     labelStyle={'display':'block'},
-                    id = 'radio_man_wotype'), 
+                    id = 'radio_wotype'), 
                 html.Br(), 
                 
                 # Visible when INPUT = MANUAL 
@@ -63,16 +63,16 @@ def layout(user_id=1):
                     html.Div([
                         dcc.Markdown('#### Single Distance'),
                         dcc.RadioItems(
-                            ['1km', '2km', '5km', '6km', '10km', 'other'],
+                            ['2km', '5km', '10km', 'other'],
                             labelStyle={'display':'block'},
                             id='radio_sdist_ops'),
                         dcc.Input(placeholder='custom distance (m)', id='ui_sdist_ops')
-                    ], style={'display':'block'}, id='div_man_sdist'),
+                    ], style={'display':'none'}, id='div_man_sdist'),
                     # Single Time Choices
                     html.Div([
                         dcc.Markdown('#### Single Time'),
                         dcc.RadioItems(
-                            ['15min', '20min', '30min', '45min', '1hour', 'other'],
+                            ['15min', '30min', '45min', 'other'],
                             labelStyle={'display':'block'},
                             id='radio_stime_ops'),
                         dcc.Input(placeholder='custom time (min)', id='ui_stime_ops')
@@ -81,7 +81,7 @@ def layout(user_id=1):
                     html.Div([
                         dcc.Markdown('#### Interval Distance'),
                         dcc.RadioItems(
-                            ['250', '500m', '1km', '2km', '5km', 'other'],
+                            ['500m', '1km', '2km', 'other'],
                             labelStyle={'display':'block'},
                             id='radio_idist_ops'),
                         dcc.Input(placeholder='custom distance (m)', id='ui_idist_ops')
@@ -90,14 +90,14 @@ def layout(user_id=1):
                     html.Div([
                         dcc.Markdown('#### Interval Time'),
                         dcc.RadioItems(
-                            ['1min', '5min', '15min', '20min', '30min', 'other'],
+                            ['1min', '15min', '30min', 'other'],
                             labelStyle={'display':'block'},
                             id='radio_itime_ops'),
                         dcc.Input(placeholder='custom distance (m)', id='ui_itime_ops')
                     ], style={'display':'none'}, id='div_man_itime'),
                     html.Br(),
                     dbc.Button('Fill Form',id='btn_man_go', n_clicks=0)
-                ], style={'display':'block'}, id='div_manual'),  
+                ], style={'display':'block'}, id='div_manually'),  
 
                 
                 # Visible when INPUT = Image | Upload + Display image 
@@ -109,7 +109,7 @@ def layout(user_id=1):
                     dcc.Store(id='np_array_img', data=None),
                     dcc.Store(id='raw_ocr', data=None),
                     html.Div(id='output_upload')
-                ], style={'display':'none'}, id='div_upload_image')
+                ], style={'display':'none'}, id='div_from_image')
             ]),
 
         #RIGHT SCREEN - BOTH        
@@ -162,6 +162,44 @@ def layout(user_id=1):
                 dbc.Button('Submit workout', id='btn_submit_workout2', n_clicks=0, color='primary')
                 ], style={'display':'none'}, id='form_col')
         ])])
+
+#display manual vs upload_image options
+@callback(
+    Output('div_manually', 'style'),
+    Output('div_from_image', 'style'),
+    Input('radio_input_type','value')
+)
+def show_div(input_type):
+    display = {'display':'block'}
+    hide = {'display': 'none'}
+    if input_type == 'Manually':
+        return display, hide 
+    return hide, display 
+
+# manual input > quick pick dist/time
+@callback(
+    Output('div_man_sdist', 'style'),
+    Output('div_man_stime', 'style'),
+    Output('div_man_idist', 'style'),
+    Output('div_man_itime', 'style'),
+    Input('radio_input_type','value'),
+    Input('radio_wotype', 'value')
+)
+def display_quick_select_values(input_type, wo_type):
+    if input_type == 'From Image':
+        raise PreventUpdate
+    display = {'display':'block'}
+    hide = {'display': 'none'}
+    if wo_type == 'Single Distance':
+        return display, hide, hide, hide 
+    elif wo_type == 'Single Time':
+        return hide, display, hide, hide
+    elif wo_type == 'Interval Distance':
+        return hide, hide, display, hide
+    else:
+        return hide, hide, hide, display 
+
+######
 
 #upload pic
 @callback(
