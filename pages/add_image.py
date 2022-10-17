@@ -38,40 +38,36 @@ def layout(user_id=1):
     return dbc.Container([
         dcc.Store(id='user_id', data=user_id),
         dcc.Markdown('# Add Workout'),
-        # Radio Select input type
-        dcc.RadioItems(['Manually', 'From Image'], 'Manually', labelStyle={'display': 'block'},id='radio_input_type'),
-        # Manual Input Only
-        html.Div([
-            dcc.Markdown('### Workout Type'),
-            dcc.RadioItems(
-                options=['Single Distance', 'Single Time', 'Interval Distance', 'Interval Time'],
-                value='Single Distance',
-                labelStyle={'display':'block'},
-                id = 'radio_man_wotype')
-        ]),
-
-        # Radio Select 
-        dcc.RadioItems(options=['Single Time/Distance','Intervals'], value='Single Time/Distance', id='radio_wotype'),
         dbc.Row([
-        # Upload + Display image
+            # LEFT SCREEN
             dbc.Col([
-                # dbc.Row([
-                #     dcc.Upload(
-                #     id='upload-image',
-                #     children=html.Button('Upload Image', id="upload_image")),
-                #     dcc.Markdown('  or  '),
-                #     dbc.Button('Manual Input', id='btn_manual_input')
-                # ]),
+                # Radio Select input type
+                dcc.RadioItems(
+                    ['Manually', 'From Image'], 
+                    'Manually', 
+                    labelStyle={'display': 'block'},
+                    id='radio_input_type'),
+                html.Br(),
+                # Radio select workout type
+                dcc.Markdown('#### Workout Type'),
+                dcc.RadioItems(
+                    options=['Single Distance', 'Single Time', 'Interval Distance', 'Interval Time'],
+                    value='Single Distance',
+                    labelStyle={'display':'block'},
+                    id = 'radio_man_wotype'),  
+                html.Div([
+                    # Upload + Display image | Input = Image
+                    dcc.Upload(
+                        id='upload-image',
+                        children=html.Button('Upload Image', id="upload_image")),
+                    dcc.Store(id='base64_img', data=None),
+                    dcc.Store(id='np_array_img', data=None),
+                    dcc.Store(id='raw_ocr', data=None),
+                    html.Div(id='output_upload')
+                ], style={'display':'none'}, id='div_upload_image')
+            ]),
 
-                dbc.Row([
-                    dbc.Col(dcc.Upload(id='upload-image', children=html.Button('Upload Image', id="upload_image"))),
-                    dbc.Col(dcc.Markdown('  or  ')),
-                    dbc.Col(dbc.Button('Manual Input', id='btn_manual_input')),
-                ]),
-                dcc.Store(id='base64_img', data=None),
-                dcc.Store(id='np_array_img', data=None),
-                dcc.Store(id='raw_ocr', data=None),
-                html.Div(id='output_upload')]),
+        #BOTH        
         # data form feilds
             dbc.Col([
                 dcc.Store(id='ocr_dict', data=None),
