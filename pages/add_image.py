@@ -38,18 +38,40 @@ def layout(user_id=1):
     return dbc.Container([
         dcc.Store(id='user_id', data=user_id),
         dcc.Markdown('# Add Workout'),
-        # Radio Select
-        dcc.RadioItems(options=['Single Time/Distance','Intervals'], value='Single Time/Distance', id='radio_select'),
+        # Radio Select input type
+        dcc.RadioItems(['Manually', 'From Image'], 'Manually', labelStyle={'display': 'block'},id='radio_input_type'),
+        # Manual Input Only
+        html.Div([
+            dcc.Markdown('### Workout Type'),
+            dcc.RadioItems(
+                options=['Single Distance', 'Single Time', 'Interval Distance', 'Interval Time'],
+                value='Single Distance',
+                labelStyle={'display':'block'},
+                id = 'radio_man_wotype')
+        ]),
+
+        # Radio Select 
+        dcc.RadioItems(options=['Single Time/Distance','Intervals'], value='Single Time/Distance', id='radio_wotype'),
         dbc.Row([
         # Upload + Display image
             dbc.Col([
-                dcc.Upload(
-                    id='upload-image',
-                    children=html.Button('Upload Image', id="upload_image")),
+                # dbc.Row([
+                #     dcc.Upload(
+                #     id='upload-image',
+                #     children=html.Button('Upload Image', id="upload_image")),
+                #     dcc.Markdown('  or  '),
+                #     dbc.Button('Manual Input', id='btn_manual_input')
+                # ]),
+
+                dbc.Row([
+                    dbc.Col(dcc.Upload(id='upload-image', children=html.Button('Upload Image', id="upload_image"))),
+                    dbc.Col(dcc.Markdown('  or  ')),
+                    dbc.Col(dbc.Button('Manual Input', id='btn_manual_input')),
+                ]),
                 dcc.Store(id='base64_img', data=None),
                 dcc.Store(id='np_array_img', data=None),
                 dcc.Store(id='raw_ocr', data=None),
-                html.Div(id='output-upload')]),
+                html.Div(id='output_upload')]),
         # data form feilds
             dbc.Col([
                 dcc.Store(id='ocr_dict', data=None),
@@ -102,7 +124,7 @@ def layout(user_id=1):
 
 #upload pic
 @callback(
-    Output('output-upload', 'children'),
+    Output('output_upload', 'children'),
     Output('base64_img', 'data'),
     Input('upload-image', 'contents'), 
     State('upload-image', 'filename'),
@@ -117,7 +139,7 @@ def upload_img(contents, filename, date):
             html.H6(datetime.datetime.fromtimestamp(date)),
             # HTML images accept base64 encoded strings in the same format
             # that is supplied by the upload
-            html.Img(src=contents,id='erg_pic'),
+            html.Img(src=contents,id='erg_pic',style={'width':'70%'}),
             html.Hr() #horizontal line
             ])
         return children, base64_img
@@ -161,7 +183,7 @@ def extract_ocr(image):
     Input('raw_ocr', 'data'),
     Input('interval_submit2', 'n_clicks'),
     Input('intrvl_formatting_approved2','data'),
-    State('radio_select','value'),
+    State('radio_wotype','value'),
     State('ui_date2', 'value'),
     State('int_dict2', 'data')
 )
@@ -211,7 +233,7 @@ def fill_form(raw_ocr, n_clicks, formatted, radio, date, df):
     State('ui_com2', 'value'),
     State('int_dict2', 'data'),
     State('h2_input_form', 'children'),
-    State('radio_select', 'value'),
+    State('radio_wotype', 'value'),
     State('intrvl_count', 'data')
 )
 def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head, radio, num_intrvls):
@@ -249,7 +271,7 @@ def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head
     State('intrvl_formatting_approved2', 'data'),
     State('int_dict2', 'data'),
     State('user_id', 'data'),
-    State('radio_select', 'value')
+    State('radio_wotype', 'value')
 )
 def post_wo_to_db(n_clicks, formatting_approved, int_dict, user_id, radio):
     if n_clicks==0 or not formatting_approved:
