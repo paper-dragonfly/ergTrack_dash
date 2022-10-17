@@ -41,22 +41,67 @@ def layout(user_id=1):
         dbc.Row([
             # LEFT SCREEN
             dbc.Col([
-                # Radio Select input type
+                # Radio Select: input type
                 dcc.RadioItems(
                     ['Manually', 'From Image'], 
                     'Manually', 
                     labelStyle={'display': 'block'},
                     id='radio_input_type'),
                 html.Br(),
-                # Radio select workout type
+                # Radio Select: workout type
                 dcc.Markdown('#### Workout Type'),
                 dcc.RadioItems(
                     options=['Single Distance', 'Single Time', 'Interval Distance', 'Interval Time'],
                     value='Single Distance',
                     labelStyle={'display':'block'},
-                    id = 'radio_man_wotype'),  
+                    id = 'radio_man_wotype'), 
+                html.Br(), 
+                
+                # Visible when INPUT = MANUAL 
                 html.Div([
-                    # Upload + Display image | Input = Image
+                    # Single Distance Choices
+                    html.Div([
+                        dcc.Markdown('#### Single Distance'),
+                        dcc.RadioItems(
+                            ['1km', '2km', '5km', '6km', '10km', 'other'],
+                            labelStyle={'display':'block'},
+                            id='radio_sdist_ops'),
+                        dcc.Input(placeholder='custom distance (m)', id='ui_sdist_ops')
+                    ], style={'display':'block'}, id='div_man_sdist'),
+                    # Single Time Choices
+                    html.Div([
+                        dcc.Markdown('#### Single Time'),
+                        dcc.RadioItems(
+                            ['15min', '20min', '30min', '45min', '1hour', 'other'],
+                            labelStyle={'display':'block'},
+                            id='radio_stime_ops'),
+                        dcc.Input(placeholder='custom time (min)', id='ui_stime_ops')
+                    ], style={'display':'none'}, id='div_man_stime'),
+                    # Interval Distance Choices
+                    html.Div([
+                        dcc.Markdown('#### Interval Distance'),
+                        dcc.RadioItems(
+                            ['250', '500m', '1km', '2km', '5km', 'other'],
+                            labelStyle={'display':'block'},
+                            id='radio_idist_ops'),
+                        dcc.Input(placeholder='custom distance (m)', id='ui_idist_ops')
+                    ], style={'display':'none'}, id='div_man_idist'),
+                     # Interval Distance Choices
+                    html.Div([
+                        dcc.Markdown('#### Interval Time'),
+                        dcc.RadioItems(
+                            ['1min', '5min', '15min', '20min', '30min', 'other'],
+                            labelStyle={'display':'block'},
+                            id='radio_itime_ops'),
+                        dcc.Input(placeholder='custom distance (m)', id='ui_itime_ops')
+                    ], style={'display':'none'}, id='div_man_itime'),
+                    html.Br(),
+                    dbc.Button('Fill Form',id='btn_man_go', n_clicks=0)
+                ], style={'display':'block'}, id='div_manual'),  
+
+                
+                # Visible when INPUT = Image | Upload + Display image 
+                html.Div([
                     dcc.Upload(
                         id='upload-image',
                         children=html.Button('Upload Image', id="upload_image")),
@@ -67,7 +112,7 @@ def layout(user_id=1):
                 ], style={'display':'none'}, id='div_upload_image')
             ]),
 
-        #BOTH        
+        #RIGHT SCREEN - BOTH        
         # data form feilds
             dbc.Col([
                 dcc.Store(id='ocr_dict', data=None),
@@ -115,7 +160,7 @@ def layout(user_id=1):
                     [dbc.Table.from_dataframe(pd.DataFrame(EMPTY_INTERVAL_TABLE),striped=True,bordered=True)], 
                     id='interval_table2'),
                 dbc.Button('Submit workout', id='btn_submit_workout2', n_clicks=0, color='primary')
-                ], id='form_col')
+                ], style={'display':'none'}, id='form_col')
         ])])
 
 #upload pic
