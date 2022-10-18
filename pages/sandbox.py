@@ -7,3 +7,5 @@ def layout():
         dcc.Link('to home', href='/'),
         dcc.Link('to guest workout_log', href='/workout_log/1')
     ])
+
+

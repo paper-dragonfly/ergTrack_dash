@@ -113,7 +113,7 @@ def upload_img(contents, filename, date):
         base64_img = contents[23:]
         print('b64: ', type(base64_img))
         children = dbc.Container([
-            html.H5(filename),
+            html.H5(filename),  
             html.H6(datetime.datetime.fromtimestamp(date)),
             # HTML images accept base64 encoded strings in the same format
             # that is supplied by the upload
@@ -166,19 +166,26 @@ def extract_ocr(image):
     State('int_dict2', 'data')
 )
 def fill_form(raw_ocr, n_clicks, formatted, radio, date, df):
-    if not raw_ocr:
+    if not raw_ocr: # no image uploaded & processed 
         raise PreventUpdate #TODO: change this to allow manual input
-    num_ints = len(raw_ocr['time'])
+    num_ints = len(raw_ocr['time']) 
     print('num ints', num_ints, file=stderr)
     hr = 'n/a'
     rest = 'n/a'
     if radio == 'Intervals':
         rest = None  
-    if n_clicks == 0: 
+    if n_clicks == 0: # Initial load
         if len(raw_ocr['summary']) == 5: #HR is present in image
             hr = raw_ocr['summary'][4] 
         #.strip() removes leading and trailing white spaces
-        return raw_ocr['date'].strip(), raw_ocr['summary'][0].strip(), raw_ocr['summary'][1].strip(), raw_ocr['summary'][2].strip(), raw_ocr['summary'][3].strip(), hr, rest, num_ints
+        try: 
+            return raw_ocr['date'].strip(), raw_ocr['summary'][0].strip(), raw_ocr['summary'][1].strip(), raw_ocr['summary'][2].strip(), raw_ocr['summary'][3].strip(), hr, rest, num_ints
+        except IndexError: #when len(raw_ocr['summary']) < 4 #NOTE: could remove above return statement and just use what's below
+            return_list = [raw_ocr['date'].strip(), None, None, None, None, hr, rest, num_ints]
+            for i in range(len(raw_ocr['summary'])):
+                return_list[i+1] = raw_ocr['summary'][i].strip()
+            return tuple(return_list)
+            
     if not formatted:
         print('blocked formatted  == False', file=stderr)
         raise PreventUpdate 
@@ -191,7 +198,7 @@ def fill_form(raw_ocr, n_clicks, formatted, radio, date, df):
     
 
 
-# Add intervals to inverval table
+# Add intervals to inverval table   
 @callback(
     Output('h2_input_form', 'children'), #form title
     Output('interval_table2','children'), #table
