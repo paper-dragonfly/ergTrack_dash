@@ -161,7 +161,7 @@ def layout(user_id=1):
                     [dbc.Table.from_dataframe(pd.DataFrame(EMPTY_INTERVAL_TABLE),striped=True,bordered=True)], 
                     id='interval_table2'),
                 dbc.Button('Submit workout', id='btn_submit_workout2', n_clicks=0, color='primary')
-                ], style={'display':'block'}, id='form_col')
+                ], style={'display':'none'}, id='form_col')
         ])])
 
 #display manual vs upload_image options
@@ -245,15 +245,17 @@ def store_quick_pick(n_clicks,wo_type,rsdist,rstime,ridist,ritime,ui_sdist, ui_s
 
 
 # Show form     
-# @callback(
-#     Output('form_col','style'),
-#     Input('btn_fill_form','n_clicks'),
-#     Input('raw_ocr', 'data'),
-#     prevent_initial_call=True
-# )
-# def show_form(manual_n_clicks, image_uploaded):
-#     if image_uploaded:
-#         return {'display':'block'}
+@callback(
+    Output('form_col','style'),
+    Input('btn_fill_form','n_clicks'),
+    Input('raw_ocr', 'data'),
+    prevent_initial_call=True
+)
+def show_form(manual_n_clicks, image_uploaded):
+    if manual_n_clicks == 0 and not image_uploaded:
+        return {'display':'none'}
+    else:
+        return {'display':'block'}
 
 # FROM IMAGE
 #upload pic
