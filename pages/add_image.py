@@ -97,7 +97,7 @@ def layout(user_id=1):
                     ], style={'display':'none'}, id='div_man_itime'),
                     html.Br(),
                     dbc.Button('Fill Form',id='btn_fill_form', n_clicks=0),
-                    dcc.Store('quick_pick_val', data=None)
+                    dcc.Store(id='quick_pick_val', data=None)
                 ], style={'display':'block'}, id='div_manually'),  
 
                 
@@ -216,29 +216,27 @@ def display_quick_select_values(input_type, wo_type):
     State('quick_pick_val', 'data')
 )
 def store_quick_pick(n_clicks,wo_type,rsdist,rstime,ridist,ritime,ui_sdist, ui_stime, ui_idist, ui_itime, quick_pick_val):
+    print('Fill Form n-clicks in store_quick_pick callback:', n_clicks)
     if n_clicks == 0:
         raise PreventUpdate
-    print(n_clicks)
     print('QUICK PICK VAL: ', quick_pick_val)
-    pdb.set_trace() 
-
     if wo_type =='Single Distance':
-        if rsdist == 'other' or ui_sdist != "":
+        if rsdist == 'other' or ui_sdist or not rsdist:
             val= ui_sdist
         else:
             val= rsdist
-    elif wo_type == 'Single Interval' or ui_sdist != "": 
-        if rstime == 'other':
+    elif wo_type == 'Single Time': 
+        if rstime == 'other' or ui_stime or not rstime:
             val= ui_stime
         else:
             val= rstime
-    elif wo_type =='Interval Distance' or ui_sdist != "":
-        if ridist == 'other':
+    elif wo_type =='Interval Distance':
+        if ridist == 'other' or ui_idist or not ridist: 
             val= ui_idist
         else:
             val= ridist
-    elif wo_type == 'Single Interval' or ui_sdist != "": 
-        if ritime == 'other':
+    elif wo_type == 'Interval Time': 
+        if ritime == 'other' or ui_itime or not ritime:
             val= ui_itime
         else:
             val= ritime
@@ -316,19 +314,21 @@ def extract_ocr(image):
     Output('ui_hr2', 'value'),
     Output('ui_rest2','value'),
     Output('intrvl_count', 'data'),
-    Input('btn_fill_form', 'n_clicks'),
+    # Input('btn_fill_form', 'n_clicks'),
+    Input('quick_pick_val', 'data'),
     Input('raw_ocr', 'data'),
     Input('interval_submit2', 'n_clicks'),
     Input('intrvl_formatting_approved2','data'),
     State('radio_input_type','value'),
     State('radio_wotype','value'),
-    State('quick_pick_val', 'data'),
     State('ui_date2', 'value'),
     State('int_dict2', 'data'),
     prevent_initial_call = True
 )
-def fill_form(n_clicks_manual_fill_form, raw_ocr, n_clicks_intsubmit, formatted, radio_it, radio_wot, quick_pick_val, date, df):
+def fill_form(quick_pick_val, raw_ocr, n_clicks_intsubmit, formatted, radio_it, radio_wot, date, df):
     if radio_it == 'Manually':
+        if not quick_pick_val:
+            raise PreventUpdate
         print('form fill quick val: ', quick_pick_val)
         date = date 
         split = '2:00'
@@ -341,6 +341,7 @@ def fill_form(n_clicks_manual_fill_form, raw_ocr, n_clicks_intsubmit, formatted,
             return date, None, quick_pick_val, split, sr,hr,rest,None 
         elif radio_wot == 'Single Time' or radio_wot=='Interval Time':  
             return date, quick_pick_val, None, split, sr,hr,rest, None
+    
     elif radio_it == 'From Image':
         if not raw_ocr:
             raise PreventUpdate #TODO: change this to allow manual input
