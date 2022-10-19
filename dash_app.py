@@ -19,6 +19,8 @@ app.layout = dbc.Container([
         dcc.Dropdown(
             options=['None'], 
             value="None", 
+            placeholder='select user...',
+            style = {'width':'100%'},
             id='user_dropdown'),
         dbc.Button(
             children='⟳', 
