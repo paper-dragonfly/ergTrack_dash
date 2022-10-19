@@ -446,7 +446,9 @@ def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head
     df['Comment'].append(com)
     # df = pd.DataFrame(df)
     num_rows = len(df['Date']) 
-    complete_alert = display if (num_rows == num_intrvls + 1) else dont_display
+    complete_alert = display 
+    if radio_wotype == 'Interval Time' or radio_wotype=='Interval Distance':
+        complete_alert = display if (num_rows == num_intrvls + 1) else dont_display
     head = choose_title(radio_wotype, num_rows)
     return head, dbc.Table.from_dataframe(pd.DataFrame(df), striped=True, bordered=True), df, None, dont_display, True, complete_alert
 
