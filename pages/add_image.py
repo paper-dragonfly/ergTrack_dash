@@ -298,7 +298,7 @@ def upload_img(contents, filename, date):
             html.H6(datetime.datetime.fromtimestamp(date)),
             # HTML images accept base64 encoded strings in the same format
             # that is supplied by the upload
-            html.Img(src=contents,id='erg_pic',style={'width':'70%'}),
+            html.Img(src=contents,id='erg_pic',style={'width':'6'}),
             html.Hr() #horizontal line
             ])
         return children, base64_img
@@ -463,6 +463,7 @@ def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head
     State('radio_wotype', 'value')
 )
 def post_wo_to_db(n_clicks, formatting_approved, int_dict, user_id, radio):
+    # pdb.set_trace()
     if n_clicks==0 or not formatting_approved:
         raise PreventUpdate
     interval = False
