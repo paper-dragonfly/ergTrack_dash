@@ -98,6 +98,7 @@ def layout(user_id=1):
                     html.Br(),
                     dcc.Markdown('##### Number of Intervals', id='head_num_ints', style ={'display':'none'}),
                     dcc.Input(id='ui_num_ints', style={'display':'none'}),
+                    dcc.Store(id='man_num_ints' ),
                     html.Br(),
                     dbc.Button('Fill Form',id='btn_fill_form', n_clicks=0),
                     dcc.Store(id='quick_pick_val', data=None)
@@ -253,13 +254,18 @@ def store_quick_pick(n_clicks,wo_type,rsdist,rstime,ridist,ritime,ui_sdist, ui_s
 )
 def show_num_ints_input(wotype, intype):
     if intype == 'From Image':
-        raise PreventUpdate
+        return {'display':'none'}, {'display':'none'}
     if wotype == 'Single Distance' or wotype == 'Single Time':
-        raise PreventUpdate
+        return {'display':'none'}, {'display':'none'}
     return {'display':'block'}, {'display':'block'}
 
-
-
+# save man input num_ints to dcc.store
+@callback(
+    Output('man_num_ints', 'data'),
+    Input('ui_num_ints', 'value')
+)
+def save_num_ints(num_ints):
+    return num_ints
 
 # Show form     
 @callback(
@@ -338,27 +344,34 @@ def extract_ocr(image):
     Input('interval_submit2', 'n_clicks'),
     Input('intrvl_formatting_approved2','data'),
     State('radio_input_type','value'),
-    State('radio_wotype','value'),
+    State('radio_wotype','value'),  
     State('ui_date2', 'value'),
+    State('ui_time2','value'),
+    State('ui_dist2','value'),
+    State('man_num_ints', 'data'),
     State('int_dict2', 'data'),
     prevent_initial_call = True
 )
-def fill_form(quick_pick_val, raw_ocr, n_clicks_intsubmit, formatted, radio_it, radio_wot, date, df):
+def fill_form(quick_pick_val, raw_ocr, n_clicks_intsubmit, formatted, radio_it, radio_wot, date, time, dist, man_num_ints, df):
     if radio_it == 'Manually':
         if not quick_pick_val:
             raise PreventUpdate
         print('form fill quick val: ', quick_pick_val)
         date = date 
-        split = '2:00'
+        split = '2:00.0'
         sr = '20'
         hr = 'n/a'
         rest = 'n/a'
         if radio_wot == 'Interval Time' or radio_wot== 'Interval Distance':
             rest = '60'
-        if radio_wot == 'Single Distance' or radio_wot == 'Interval Distance':
-            return date, None, quick_pick_val, split, sr,hr,rest,None 
-        elif radio_wot == 'Single Time' or radio_wot=='Interval Time':  
-            return date, quick_pick_val, None, split, sr,hr,rest, None
+        if radio_wot == 'Single Distance':
+            return date, time, quick_pick_val, split, sr,hr,rest, 1
+        elif radio_wot == 'Interval Distance':
+            return date, time, quick_pick_val, split, sr,hr,rest, int(man_num_ints)
+        elif radio_wot == 'Single Time':
+            return date, quick_pick_val, dist, split, sr,hr,rest, 1
+        elif radio_wot=='Interval Time':  
+            return date, quick_pick_val, dist, split, sr,hr,rest, int(man_num_ints)
     
     elif radio_it == 'From Image':
         if not raw_ocr:
@@ -367,7 +380,7 @@ def fill_form(quick_pick_val, raw_ocr, n_clicks_intsubmit, formatted, radio_it, 
         print('num ints', num_ints, file=stderr)
         hr = 'n/a'
         rest = 'n/a'
-        if radio_wot == 'Intervals':
+        if radio_wot == 'Intervals Time' or radio_wot == 'Intervals Distance':
             rest = None  
         if n_clicks_intsubmit == 0: 
             if len(raw_ocr['summary']) == 5: #HR is present in image
@@ -452,7 +465,7 @@ def post_wo_to_db(n_clicks, formatting_approved, int_dict, user_id, radio):
     if n_clicks==0 or not formatting_approved:
         raise PreventUpdate
     interval = False
-    if radio == 'Intervals':
+    if radio == 'Interval Time' or radio == 'Interval Distance':
         interval = True
     wo_dict = generate_post_wo_dict2(int_dict, user_id, EMPTY_POST_WO_DICT, interval)
     print(wo_dict)
