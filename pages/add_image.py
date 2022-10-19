@@ -245,19 +245,20 @@ def store_quick_pick(n_clicks,wo_type,rsdist,rstime,ridist,ritime,ui_sdist, ui_s
     print('Quick_pick VAL ', val)
     return val 
 
-#store num_ints
+#show input: num_ints
 @callback(
     Output('head_num_ints', 'style'),
     Output('ui_num_ints', 'style'),
+    Output('head_num_ints', 'children'),
     Input('radio_wotype', 'value'),
     State('radio_input_type', 'value')
 )
 def show_num_ints_input(wotype, intype):
     if intype == 'From Image':
-        return {'display':'none'}, {'display':'none'}
+        return {'display':'none'}, {'display':'none'} 
     if wotype == 'Single Distance' or wotype == 'Single Time':
-        return {'display':'none'}, {'display':'none'}
-    return {'display':'block'}, {'display':'block'}
+        return {'display':'block'}, {'display':'block'}, '##### Number of Sub-Workouts'
+    return {'display':'block'}, {'display':'block'}, '##### Number of Intervals'
 
 # save man input num_ints to dcc.store
 @callback(
@@ -364,13 +365,9 @@ def fill_form(quick_pick_val, raw_ocr, n_clicks_intsubmit, formatted, radio_it, 
         rest = 'n/a'
         if radio_wot == 'Interval Time' or radio_wot== 'Interval Distance':
             rest = '60'
-        if radio_wot == 'Single Distance':
-            return date, time, quick_pick_val, split, sr,hr,rest, 1
-        elif radio_wot == 'Interval Distance':
+        if radio_wot == 'Interval Distance' or radio_wot == 'Single Distance':
             return date, time, quick_pick_val, split, sr,hr,rest, int(man_num_ints)
-        elif radio_wot == 'Single Time':
-            return date, quick_pick_val, dist, split, sr,hr,rest, 1
-        elif radio_wot=='Interval Time':  
+        elif radio_wot=='Interval Time' or radio_wot == 'Single Time':  
             return date, quick_pick_val, dist, split, sr,hr,rest, int(man_num_ints)
     
     elif radio_it == 'From Image':
@@ -445,9 +442,7 @@ def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head
     df['Comment'].append(com)
     # df = pd.DataFrame(df)
     num_rows = len(df['Date']) 
-    complete_alert = display 
-    if radio_wotype == 'Interval Time' or radio_wotype=='Interval Distance':
-        complete_alert = display if (num_rows == num_intrvls + 1) else dont_display
+    complete_alert = display if (num_rows == num_intrvls + 1) else dont_display
     head = choose_title(radio_wotype, num_rows)
     return head, dbc.Table.from_dataframe(pd.DataFrame(df), striped=True, bordered=True), df, None, dont_display, True, complete_alert
 
@@ -463,7 +458,6 @@ def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head
     State('radio_wotype', 'value')
 )
 def post_wo_to_db(n_clicks, formatting_approved, int_dict, user_id, radio):
-    # pdb.set_trace()
     if n_clicks==0 or not formatting_approved:
         raise PreventUpdate
     interval = False

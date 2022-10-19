@@ -309,6 +309,8 @@ def generate_post_wo_dict2(int_dict:dict, user_id:str, wo_dict:dict, interval)->
 # NOTE: even sinle time/dist wo have multiple entries (eg 2k is broken into 4x500m)
 def format_and_post_intervals(wo_id, i_dict, interval_wo=True):
     post_interval_dict_template = {'workout_id':wo_id,'time_sec':None,'distance':None,'split':None,'sr':None,'hr':None,'rest':None,'comment':None, 'interval_wo':interval_wo}
+    if len(i_dict['Date'])==1:
+        ipost_dict = {} 
     for i in range(1,len(i_dict['Date'])):
         ipost_dict = post_interval_dict_template
         ipost_dict['time_sec'] = duration_to_seconds(i_dict['Time'][i])
