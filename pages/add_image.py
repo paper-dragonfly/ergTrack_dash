@@ -294,7 +294,7 @@ def upload_img(contents, filename, date):
         base64_img = contents[23:]
         print('b64: ', type(base64_img))
         children = dbc.Container([
-            html.H5(filename),
+            html.H5(filename),  
             html.H6(datetime.datetime.fromtimestamp(date)),
             # HTML images accept base64 encoded strings in the same format
             # that is supplied by the upload
@@ -398,8 +398,7 @@ def fill_form(quick_pick_val, raw_ocr, n_clicks_intsubmit, formatted, radio_it, 
                 return date, None, None, None, None, None, None, num_ints 
     
 
-
-# Add intervals to inverval table
+# Add intervals to inverval table   
 @callback(
     Output('h2_input_form', 'children'), #form title
     Output('interval_table2','children'), #table
