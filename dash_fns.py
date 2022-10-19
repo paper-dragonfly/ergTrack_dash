@@ -103,6 +103,9 @@ def check_date(input_date:str)->dict: #'Jan 01 2000' -> yyyy-mm-dd
 def check_duration(input_dur:str, d_type='Time')->dict: 
     if not input_dur: #allow empty submission 
         return {'success':True, 'message':input_dur}
+    # add mili-seconds if not present
+    if len(re.findall('[.]\d$', input_dur))!=1:
+        input_dur += '.0'
     # adjust input_time to full format length
     blank = '00:00:00.0'
     short = 10 - len(input_dur)
@@ -363,7 +366,7 @@ def wo_details_df(wo_id):
    
 ## OTHER
 def choose_title(radio, num_rows): #No test needed
-    if radio == 'Intervals':
+    if radio == 'Interval Time' or radio=='Interval Distance':
         head = f'## Input Interval {num_rows}'
     else:
         head = f'## Input Sub-Workout {num_rows}'

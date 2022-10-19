@@ -38,18 +38,86 @@ def layout(user_id=1):
     return dbc.Container([
         dcc.Store(id='user_id', data=user_id),
         dcc.Markdown('# Add Workout'),
-        # Radio Select
-        dcc.RadioItems(options=['Single Time/Distance','Intervals'], value='Single Time/Distance', id='radio_select'),
         dbc.Row([
-        # Upload + Display image
+            # LEFT SCREEN
             dbc.Col([
-                dcc.Upload(
-                    id='upload-image',
-                    children=html.Button('Upload Image', id="upload_image")),
-                dcc.Store(id='base64_img', data=None),
-                dcc.Store(id='np_array_img', data=None),
-                dcc.Store(id='raw_ocr', data=None),
-                html.Div(id='output-upload')]),
+                # Radio Select: input type
+                dcc.RadioItems(
+                    ['Manually', 'From Image'], 
+                    'Manually', 
+                    labelStyle={'display': 'block'},
+                    id='radio_input_type'),
+                html.Br(),
+                # Radio Select: workout type
+                dcc.Markdown('#### Workout Type'),
+                dcc.RadioItems(
+                    options=['Single Distance', 'Single Time', 'Interval Distance', 'Interval Time'],
+                    value = 'Single Distance',
+                    labelStyle={'display':'block'},
+                    id = 'radio_wotype'), 
+                html.Br(), 
+                
+                # Visible when INPUT = MANUAL 
+                html.Div([
+                    # Single Distance Choices
+                    html.Div([
+                        dcc.Markdown('#### Single Distance (m)'),
+                        dcc.RadioItems(
+                            ['2000', '5000', '10000', 'other'],
+                            labelStyle={'display':'block'},
+                            id='radio_sdist_ops'),
+                        dcc.Input(placeholder='custom distance (m)', id='ui_sdist_ops')
+                    ], style={'display':'none'}, id='div_man_sdist'),
+                    # Single Time Choices
+                    html.Div([
+                        dcc.Markdown('#### Single Time'),
+                        dcc.RadioItems(
+                            ['15:00', '30:00', '45:00', 'other'],
+                            labelStyle={'display':'block'},
+                            id='radio_stime_ops'),
+                        dcc.Input(placeholder='custom time (hh:mm:ss)', id='ui_stime_ops')
+                    ], style={'display':'none'}, id='div_man_stime'),
+                    # Interval Distance Choices
+                    html.Div([
+                        dcc.Markdown('#### Interval Distance'),
+                        dcc.RadioItems(
+                            ['500', '1000', '2000', 'other'],
+                            labelStyle={'display':'block'},
+                            id='radio_idist_ops'),
+                        dcc.Input(placeholder='custom distance (m)', id='ui_idist_ops')
+                    ], style={'display':'none'}, id='div_man_idist'),
+                     # Interval Distance Choices
+                    html.Div([
+                        dcc.Markdown('#### Interval Time'),
+                        dcc.RadioItems(
+                            ['1:00', '15:00', '30:00', 'other'],
+                            labelStyle={'display':'block'},
+                            id='radio_itime_ops'),
+                        dcc.Input(placeholder='custom time (hh:mm:ss)', id='ui_itime_ops')
+                    ], style={'display':'none'}, id='div_man_itime'),
+                    html.Br(),
+                    dcc.Markdown('##### Number of Intervals', id='head_num_ints', style ={'display':'none'}),
+                    dcc.Input(id='ui_num_ints', style={'display':'none'}),
+                    dcc.Store(id='man_num_ints' ),
+                    html.Br(),
+                    dbc.Button('Fill Form',id='btn_fill_form', n_clicks=0),
+                    dcc.Store(id='quick_pick_val', data=None)
+                ], style={'display':'block'}, id='div_manually'),  
+
+                
+                # Visible when INPUT = Image | Upload + Display image 
+                html.Div([
+                    dcc.Upload(
+                        id='upload-image',
+                        children=html.Button('Upload Image', id="upload_image")),
+                    dcc.Store(id='base64_img', data=None),
+                    dcc.Store(id='np_array_img', data=None),
+                    dcc.Store(id='raw_ocr', data=None),
+                    html.Div(id='output_upload')
+                ], style={'display':'none'}, id='div_from_image')
+            ]),
+
+        #RIGHT SCREEN - BOTH        
         # data form feilds
             dbc.Col([
                 dcc.Store(id='ocr_dict', data=None),
@@ -97,12 +165,125 @@ def layout(user_id=1):
                     [dbc.Table.from_dataframe(pd.DataFrame(EMPTY_INTERVAL_TABLE),striped=True,bordered=True)], 
                     id='interval_table2'),
                 dbc.Button('Submit workout', id='btn_submit_workout2', n_clicks=0, color='primary')
-                ], id='form_col')
+                ], style={'display':'none'}, id='form_col')
         ])])
 
+#display manual vs upload_image options
+@callback(
+    Output('div_manually', 'style'),
+    Output('div_from_image', 'style'),
+    Input('radio_input_type','value')
+)
+def show_div(input_type):
+    display = {'display':'block'}
+    hide = {'display': 'none'}
+    if input_type == 'Manually':
+        return display, hide 
+    return hide, display 
+
+# manual input > quick pick dist/time
+@callback(
+    Output('div_man_sdist', 'style'),
+    Output('div_man_stime', 'style'),
+    Output('div_man_idist', 'style'),
+    Output('div_man_itime', 'style'),
+    Input('radio_input_type','value'),
+    Input('radio_wotype', 'value')
+)
+def display_quick_select_values(input_type, wo_type):
+    if input_type == 'From Image':
+        raise PreventUpdate
+    display = {'display':'block'}
+    hide = {'display': 'none'}
+    if wo_type == 'Single Distance':
+        return display, hide, hide, hide 
+    elif wo_type == 'Single Time':
+        return hide, display, hide, hide
+    elif wo_type == 'Interval Distance':
+        return hide, hide, display, hide
+    else:
+        return hide, hide, hide, display 
+
+#store quick_pick val
+@callback(
+    Output('quick_pick_val', 'data'),
+    Input('btn_fill_form', 'n_clicks'),
+    State('radio_wotype', 'value'),
+    State('radio_sdist_ops', 'value'),
+    State('radio_stime_ops', 'value'),
+    State('radio_idist_ops', 'value'),
+    State('radio_itime_ops', 'value'),
+    State('ui_sdist_ops', 'value'),
+    State('ui_stime_ops', 'value'),
+    State('ui_idist_ops', 'value'),
+    State('ui_itime_ops', 'value'),
+    State('quick_pick_val', 'data')
+)
+def store_quick_pick(n_clicks,wo_type,rsdist,rstime,ridist,ritime,ui_sdist, ui_stime, ui_idist, ui_itime, quick_pick_val):
+    if n_clicks == 0:
+        raise PreventUpdate
+    if wo_type =='Single Distance':
+        if rsdist == 'other' or ui_sdist or not rsdist:
+            val= ui_sdist
+        else:
+            val= rsdist
+    elif wo_type == 'Single Time': 
+        if rstime == 'other' or ui_stime or not rstime:
+            val= ui_stime
+        else:
+            val= rstime
+    elif wo_type =='Interval Distance':
+        if ridist == 'other' or ui_idist or not ridist: 
+            val= ui_idist
+        else:
+            val= ridist
+    elif wo_type == 'Interval Time': 
+        if ritime == 'other' or ui_itime or not ritime:
+            val= ui_itime
+        else:
+            val= ritime
+    print('Quick_pick VAL ', val)
+    return val 
+
+#store num_ints
+@callback(
+    Output('head_num_ints', 'style'),
+    Output('ui_num_ints', 'style'),
+    Input('radio_wotype', 'value'),
+    State('radio_input_type', 'value')
+)
+def show_num_ints_input(wotype, intype):
+    if intype == 'From Image':
+        return {'display':'none'}, {'display':'none'}
+    if wotype == 'Single Distance' or wotype == 'Single Time':
+        return {'display':'none'}, {'display':'none'}
+    return {'display':'block'}, {'display':'block'}
+
+# save man input num_ints to dcc.store
+@callback(
+    Output('man_num_ints', 'data'),
+    Input('ui_num_ints', 'value')
+)
+def save_num_ints(num_ints):
+    return num_ints
+
+# Show form     
+@callback(
+    Output('form_col','style'),
+    Input('btn_fill_form','n_clicks'),
+    Input('raw_ocr', 'data'),
+    prevent_initial_call=True
+)
+def show_form(manual_n_clicks, image_uploaded):
+    if manual_n_clicks == 0 and not image_uploaded:
+        return {'display':'none'}
+    else:
+        return {'display':'block'}
+
+# FROM IMAGE
 #upload pic
 @callback(
-    Output('output-upload', 'children'),
+    Output('output_upload', 'children'),
     Output('base64_img', 'data'),
     Input('upload-image', 'contents'), 
     State('upload-image', 'filename'),
@@ -117,7 +298,7 @@ def upload_img(contents, filename, date):
             html.H6(datetime.datetime.fromtimestamp(date)),
             # HTML images accept base64 encoded strings in the same format
             # that is supplied by the upload
-            html.Img(src=contents,id='erg_pic'),
+            html.Img(src=contents,id='erg_pic',style={'width':'70%'}),
             html.Hr() #horizontal line
             ])
         return children, base64_img
@@ -148,7 +329,7 @@ def extract_ocr(image):
         print(raw_ocr, file=stderr)
         return raw_ocr 
 
-
+#FORM
 @callback(
     Output('ui_date2', 'value'),
     Output('ui_time2', 'value'),
@@ -158,45 +339,64 @@ def extract_ocr(image):
     Output('ui_hr2', 'value'),
     Output('ui_rest2','value'),
     Output('intrvl_count', 'data'),
+    Input('quick_pick_val', 'data'),
     Input('raw_ocr', 'data'),
     Input('interval_submit2', 'n_clicks'),
     Input('intrvl_formatting_approved2','data'),
-    State('radio_select','value'),
+    State('radio_input_type','value'),
+    State('radio_wotype','value'),  
     State('ui_date2', 'value'),
-    State('int_dict2', 'data')
+    State('ui_time2','value'),
+    State('ui_dist2','value'),
+    State('man_num_ints', 'data'),
+    State('int_dict2', 'data'),
+    prevent_initial_call = True
 )
-def fill_form(raw_ocr, n_clicks, formatted, radio, date, df):
-    if not raw_ocr: # no image uploaded & processed 
-        raise PreventUpdate #TODO: change this to allow manual input
-    num_ints = len(raw_ocr['time']) 
-    print('num ints', num_ints, file=stderr)
-    hr = 'n/a'
-    rest = 'n/a'
-    if radio == 'Intervals':
-        rest = None  
-    if n_clicks == 0: # Initial load
-        if len(raw_ocr['summary']) == 5: #HR is present in image
-            hr = raw_ocr['summary'][4] 
-        #.strip() removes leading and trailing white spaces
-        try: 
-            return raw_ocr['date'].strip(), raw_ocr['summary'][0].strip(), raw_ocr['summary'][1].strip(), raw_ocr['summary'][2].strip(), raw_ocr['summary'][3].strip(), hr, rest, num_ints
-        except IndexError: #when len(raw_ocr['summary']) < 4 #NOTE: could remove above return statement and just use what's below
-            return_list = [raw_ocr['date'].strip(), None, None, None, None, hr, rest, num_ints]
-            for i in range(len(raw_ocr['summary'])):
-                return_list[i+1] = raw_ocr['summary'][i].strip()
-            return tuple(return_list)
-            
-    if not formatted:
-        print('blocked formatted  == False', file=stderr)
-        raise PreventUpdate 
-    else:
-        i = len(df['Time'])-1
-        if i < num_ints: 
-            return date, raw_ocr['time'][i], raw_ocr['dist'][i], raw_ocr['split'][i], raw_ocr['sr'][i], hr, rest, num_ints
-        else: 
-            return date, None, None, None, None, None, None, num_ints 
+def fill_form(quick_pick_val, raw_ocr, n_clicks_intsubmit, formatted, radio_it, radio_wot, date, time, dist, man_num_ints, df):
+    if radio_it == 'Manually':
+        if not quick_pick_val:
+            raise PreventUpdate
+        print('form fill quick val: ', quick_pick_val)
+        date = date 
+        split = '2:00.0'
+        sr = '20'
+        hr = 'n/a'
+        rest = 'n/a'
+        if radio_wot == 'Interval Time' or radio_wot== 'Interval Distance':
+            rest = '60'
+        if radio_wot == 'Single Distance':
+            return date, time, quick_pick_val, split, sr,hr,rest, 1
+        elif radio_wot == 'Interval Distance':
+            return date, time, quick_pick_val, split, sr,hr,rest, int(man_num_ints)
+        elif radio_wot == 'Single Time':
+            return date, quick_pick_val, dist, split, sr,hr,rest, 1
+        elif radio_wot=='Interval Time':  
+            return date, quick_pick_val, dist, split, sr,hr,rest, int(man_num_ints)
     
-
+    elif radio_it == 'From Image':
+        if not raw_ocr:
+            raise PreventUpdate #TODO: change this to allow manual input
+        num_ints = len(raw_ocr['time'])
+        print('num ints', num_ints, file=stderr)
+        hr = 'n/a'
+        rest = 'n/a'
+        if radio_wot == 'Intervals Time' or radio_wot == 'Intervals Distance':
+            rest = None  
+        if n_clicks_intsubmit == 0: 
+            if len(raw_ocr['summary']) == 5: #HR is present in image
+                hr = raw_ocr['summary'][4] 
+            #.strip() removes leading and trailing white spaces
+            return raw_ocr['date'].strip(), raw_ocr['summary'][0].strip(), raw_ocr['summary'][1].strip(), raw_ocr['summary'][2].strip(), raw_ocr['summary'][3].strip(), hr, rest, num_ints
+        if not formatted:
+            print('blocked formatted  == False', file=stderr)
+            raise PreventUpdate 
+        else:
+            i = len(df['Time'])-1
+            if i < num_ints: 
+                return date, raw_ocr['time'][i], raw_ocr['dist'][i], raw_ocr['split'][i], raw_ocr['sr'][i], hr, rest, num_ints
+            else: 
+                return date, None, None, None, None, None, None, num_ints 
+    
 
 # Add intervals to inverval table   
 @callback(
@@ -218,10 +418,10 @@ def fill_form(raw_ocr, n_clicks, formatted, radio, date, df):
     State('ui_com2', 'value'),
     State('int_dict2', 'data'),
     State('h2_input_form', 'children'),
-    State('radio_select', 'value'),
+    State('radio_wotype', 'value'),
     State('intrvl_count', 'data')
 )
-def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head, radio, num_intrvls):
+def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head, radio_wotype, num_intrvls):
     if n_clicks == 0:
         raise PreventUpdate
     display = {'display':'block'}
@@ -240,11 +440,15 @@ def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head
     df['s/m'].append(sr)
     df['HR'].append(hr)
     df['Rest'].append(rest)
+    # if not com:
+    #     com == ' '
     df['Comment'].append(com)
     # df = pd.DataFrame(df)
-    num_rows = len(df['Date'])
-    complete_alert = display if (num_rows == num_intrvls + 1) else dont_display
-    head = choose_title(radio, num_rows)
+    num_rows = len(df['Date']) 
+    complete_alert = display 
+    if radio_wotype == 'Interval Time' or radio_wotype=='Interval Distance':
+        complete_alert = display if (num_rows == num_intrvls + 1) else dont_display
+    head = choose_title(radio_wotype, num_rows)
     return head, dbc.Table.from_dataframe(pd.DataFrame(df), striped=True, bordered=True), df, None, dont_display, True, complete_alert
 
 
@@ -256,13 +460,13 @@ def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head
     State('intrvl_formatting_approved2', 'data'),
     State('int_dict2', 'data'),
     State('user_id', 'data'),
-    State('radio_select', 'value')
+    State('radio_wotype', 'value')
 )
 def post_wo_to_db(n_clicks, formatting_approved, int_dict, user_id, radio):
     if n_clicks==0 or not formatting_approved:
         raise PreventUpdate
     interval = False
-    if radio == 'Intervals':
+    if radio == 'Interval Time' or radio == 'Interval Distance':
         interval = True
     wo_dict = generate_post_wo_dict2(int_dict, user_id, EMPTY_POST_WO_DICT, interval)
     print(wo_dict)
