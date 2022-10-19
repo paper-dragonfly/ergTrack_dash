@@ -96,6 +96,9 @@ def layout(user_id=1):
                         dcc.Input(placeholder='custom time (hh:mm:ss)', id='ui_itime_ops')
                     ], style={'display':'none'}, id='div_man_itime'),
                     html.Br(),
+                    dcc.Markdown('##### Number of Intervals', id='head_num_ints', style ={'display':'none'}),
+                    dcc.Input(id='ui_num_ints', style={'display':'none'}),
+                    html.Br(),
                     dbc.Button('Fill Form',id='btn_fill_form', n_clicks=0),
                     dcc.Store(id='quick_pick_val', data=None)
                 ], style={'display':'block'}, id='div_manually'),  
@@ -216,10 +219,8 @@ def display_quick_select_values(input_type, wo_type):
     State('quick_pick_val', 'data')
 )
 def store_quick_pick(n_clicks,wo_type,rsdist,rstime,ridist,ritime,ui_sdist, ui_stime, ui_idist, ui_itime, quick_pick_val):
-    print('Fill Form n-clicks in store_quick_pick callback:', n_clicks)
     if n_clicks == 0:
         raise PreventUpdate
-    print('QUICK PICK VAL: ', quick_pick_val)
     if wo_type =='Single Distance':
         if rsdist == 'other' or ui_sdist or not rsdist:
             val= ui_sdist
@@ -240,8 +241,24 @@ def store_quick_pick(n_clicks,wo_type,rsdist,rstime,ridist,ritime,ui_sdist, ui_s
             val= ui_itime
         else:
             val= ritime
-    print('VAL ', val)
+    print('Quick_pick VAL ', val)
     return val 
+
+#store num_ints
+@callback(
+    Output('head_num_ints', 'style'),
+    Output('ui_num_ints', 'style'),
+    Input('radio_wotype', 'value'),
+    State('radio_input_type', 'value')
+)
+def show_num_ints_input(wotype, intype):
+    if intype == 'From Image':
+        raise PreventUpdate
+    if wotype == 'Single Distance' or wotype == 'Single Time':
+        raise PreventUpdate
+    return {'display':'block'}, {'display':'block'}
+
+
 
 
 # Show form     
@@ -316,7 +333,6 @@ def extract_ocr(image):
     Output('ui_hr2', 'value'),
     Output('ui_rest2','value'),
     Output('intrvl_count', 'data'),
-    # Input('btn_fill_form', 'n_clicks'),
     Input('quick_pick_val', 'data'),
     Input('raw_ocr', 'data'),
     Input('interval_submit2', 'n_clicks'),
@@ -393,7 +409,7 @@ def fill_form(quick_pick_val, raw_ocr, n_clicks_intsubmit, formatted, radio_it, 
     State('radio_wotype', 'value'),
     State('intrvl_count', 'data')
 )
-def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head, radio, num_intrvls):
+def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head, radio_wotype, num_intrvls):
     if n_clicks == 0:
         raise PreventUpdate
     display = {'display':'block'}
@@ -412,11 +428,13 @@ def stage_interval(n_clicks, date, time, dist, split, sr, hr, rest, com, df,head
     df['s/m'].append(sr)
     df['HR'].append(hr)
     df['Rest'].append(rest)
+    # if not com:
+    #     com == ' '
     df['Comment'].append(com)
     # df = pd.DataFrame(df)
-    num_rows = len(df['Date'])
+    num_rows = len(df['Date']) 
     complete_alert = display if (num_rows == num_intrvls + 1) else dont_display
-    head = choose_title(radio, num_rows)
+    head = choose_title(radio_wotype, num_rows)
     return head, dbc.Table.from_dataframe(pd.DataFrame(df), striped=True, bordered=True), df, None, dont_display, True, complete_alert
 
 
