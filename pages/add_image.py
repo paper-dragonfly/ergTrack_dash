@@ -255,7 +255,7 @@ def store_quick_pick(n_clicks,wo_type,rsdist,rstime,ridist,ritime,ui_sdist, ui_s
 )
 def show_num_ints_input(wotype, intype):
     if intype == 'From Image':
-        return {'display':'none'}, {'display':'none'} 
+        return {'display':'none'}, {'display':'none'}, 'none'
     if wotype == 'Single Distance' or wotype == 'Single Time':
         return {'display':'block'}, {'display':'block'}, '##### Number of Sub-Workouts'
     return {'display':'block'}, {'display':'block'}, '##### Number of Intervals'
