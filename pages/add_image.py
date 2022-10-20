@@ -299,7 +299,7 @@ def upload_img(contents, filename, date):
             html.H6(datetime.datetime.fromtimestamp(date)),
             # HTML images accept base64 encoded strings in the same format
             # that is supplied by the upload
-            html.Img(src=contents,id='erg_pic',style={'width':'6'}),
+            html.Img(src=contents,id='erg_pic',style={'width':'100%'}),
             html.Hr() #horizontal line
             ])
         return children, base64_img
