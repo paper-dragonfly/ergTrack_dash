@@ -363,6 +363,8 @@ def fill_form(quick_pick_val, raw_ocr, n_clicks_intsubmit, formatted, radio_it, 
         sr = '20'
         hr = 'n/a'
         rest = 'n/a'
+        if not man_num_ints:
+            man_num_ints = 0
         if radio_wot == 'Interval Time' or radio_wot== 'Interval Distance':
             rest = '60'
         if radio_wot == 'Interval Distance' or radio_wot == 'Single Distance':
