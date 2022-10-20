@@ -169,6 +169,9 @@ def duration_to_seconds(input_dur:str)->float:
     # (hh:mm:ss.d)
     if not input_dur:
         return 0
+    # add mili-seconds if not present
+    if len(re.findall('[.]\d$', input_dur))!=1:
+        input_dur += '.0'
     # adjust input_time to full format length
     blank = '00:00:00.0'
     short = 10 - len(input_dur)
