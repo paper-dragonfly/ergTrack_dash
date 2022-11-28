@@ -10,7 +10,13 @@ pil_image = Image.open("erg_cartoon.png")
 def layout():
     return dbc.Container([
         dcc.Markdown('# Welcome to ErgTracker'),
-        html.Img(src=pil_image, width='100%')    
+        html.Img(src=pil_image, width='100%'),
+        dbc.Button('View Instructions', id='btn_info', n_clicks=0),
+        html.Div([
+            dcc.Markdown('### App Info')
+
+        ], id='div_info')
+            
     ])
 
 

@@ -1,5 +1,5 @@
 import pdb
-from dash import dcc, register_page, Output, Input, State, callback, html
+from dash import dcc, register_page, Output, Input, State, callback, html, dash_table
 import pandas as pd 
 import dash_bootstrap_components as dbc
 import requests
@@ -18,6 +18,7 @@ def layout(wo_id=False):
     wo_name = ''
     if wo_id:
         df, date, wo_name = wo_details_df(wo_id)
+        cols = df.keys() 
     return dbc.Container([
         dcc.Store(id='wo_id', data=wo_id),
         dcc.Markdown('## Workout Details'),
@@ -27,7 +28,10 @@ def layout(wo_id=False):
             dbc.Col(width=1),
             dbc.Col(dbc.Table.from_dataframe(pd.DataFrame(df), striped=True, bordered=True), id="wo_table", align='center'),
             dbc.Col(width=1)
-        ])
+        ]),
+        dbc.Button('Edit','btn_edit','n_clicks'),   
+        dash_table.DataTable(id='editable_table', columns= [{id: k, 'name': k} for k in cols], data=df, editable=True)            
+
     ])
 
 
