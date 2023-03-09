@@ -30,7 +30,7 @@ def layout(wo_id=False):
             dbc.Col(width=1)
         ]),
         dbc.Button('Edit','btn_edit','n_clicks'),   
-        dash_table.DataTable(id='editable_table', columns= [{id: k, 'name': k} for k in cols], data=df, editable=True)            
+        dash_table.DataTable(id='editable_table', columns= [{'id': k, 'name': k} for k in cols], data=df, editable=True)            
 
     ])
 

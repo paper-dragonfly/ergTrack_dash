@@ -16,6 +16,7 @@ I built ergTrack as a way to learn full stack development and because it is a pr
 ### Screenshots of App
 
 ![HomePage](app_screenshots/home.png)
+![WorkoutLog](app_screenshots/workoutlog.png)
 
 ### How to Use
 
