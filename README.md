@@ -17,6 +17,7 @@ I built ergTrack as a way to learn full stack development and because it is a pr
 
 ![HomePage](app_screenshots/home.png)
 ![WorkoutLog](app_screenshots/workoutlog.png)
+
 The Workout Log contians summary data for all the workouts the user has added to ergTrack.
 Features of the workoutlog
 
@@ -26,18 +27,22 @@ Features of the workoutlog
 - Select two or more workouts to generate a comparison table
 
 ![addWorkroutImg](app_screenshots/fromImg.png)
+
 User selects a photo with workout results to be analyzed
 ergTrack uses OCR to extract data from image and pouplate the form
 
 - As this example shows, the OCR is not yet very accurate. This is something I will need to improve. For now the extracted data is placed in a form that the user can edit and correct
 
-![addWorkoutImgerr](app_screenshots/fmImg_staged.png)
+![addWorkoutImgerr](app_screenshots/fmImg_error.png)
+
 ergTrack ensures users are adding data in the correct format. If they try to submit data in the incorrect format a warning will be raised
 
 ![addWorkoutImgStaged](app_screenshots/fmImg_staged.png)
+
 An erg workout is made up of a summary (first line) and sub-workouts that give details about sections of that workout. Each of these are added seperately into a staging area and once they are all staged the workout can be submitted to the backend to be stored.
 
 ![addWorkoutManual](app_screenshots/manual.png)
+
 There is also an option to add workouts manually.
 
 ### How to Use
