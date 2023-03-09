@@ -13,7 +13,35 @@ front end for ergTrack App
 
 I built ergTrack as a way to learn full stack development and because it is a product I wanted to use and think other might use too. I realized many people, myself included, keep track of our erg workouts by taking photos of the memory screen and then proceeding to never do anything with those photos. Manually entering data into the Concept2 LogBook is too tedious for most people so I wanted to create an image-to-text app that converts memory screen photos into easily searchable database data.
 
-### Screenshots of App
+### How to Use
+
+- Open the web app: https://ergtrack-dash.onrender.com/
+- Create User
+  - click the 'Menu' button at the top of the page and navigate to the 'Add New User' tab
+  - input and submit user information
+  - click the '⟳' button to relaod the users list
+  - Select newly added user from 'Users' dropdown - new user will be at the bottom of the list
+- Add workout from photo
+  - After selecting user, navigate to the the 'Add Workout' tab and select 'From Image'
+  - Choose the correct type of workout then click 'Upload'
+  - Upload a photograph of a Concept2 Erg memory screen. The image must be cropped such that the top and bottom of the digital black box outline surrounding the workout data line up with the top and and bottom of the photo. You will likely need to crop your image before upload to achieve this. Your uploaded image should look like this:
+    ![ergScreen](cr_erg02.jpg)
+    Note: it may take some time for the image to process. Once processed, a form should appear cotaining the extracted data. The fields are editable so user can manually correct any data that was not accurately extracted.
+  - Submit each part of the workout to the workout table
+    _ Workouts are broken down into Summary and sub-workouts  
+     _ The summary shows date, total time, total distance, average split, average stroke rate and average heart rate for the piece \* If adding an interval workout the sub-workouts will correspond to the intervals. If adding a single distance/time workout, sub-workouts will correspond to sub-sections of that workout. For example a single 2km piece may show sub-workout data for each of the four 500m in that 2000m piece.
+  - Once all sub-workouts have been added click 'submit workout' to add the workout to the ErgTrack database
+- Add workout manually
+  - Navigate to 'add workout', select 'Manually'
+  - Fill in the workout form with summary and sub-workout data
+  - Submit workout to ErgTrack database
+- View, Search and Compare Workouts
+  _ Navigate to 'Menu' > 'Workout Log'. This page shows the summary data for all workouts assoicated with the selected user
+  _ VIEW: select a single workout and click 'View Workout Details' to see details about that workout including sub-workout info
+  _ SEARCH: use the filter data row at the top of the workout log to search for workouts based on any parameter
+  _ Compare: Select multiple workouts and click 'Compare' to view a bar chart comparing the splits of each of the selected workouts
+
+## Screenshots of App
 
 ![HomePage](app_screenshots/home.png)
 ![WorkoutLog](app_screenshots/workoutlog.png)
@@ -44,34 +72,6 @@ An erg workout is made up of a summary (first line) and sub-workouts that give d
 ![addWorkoutManual](app_screenshots/manual.png)
 
 There is also an option to add workouts manually.
-
-### How to Use
-
-- Open the web app: https://ergtrack-dash.onrender.com/
-- Create User
-  - click the 'Menu' button at the top of the page and navigate to the 'Add New User' tab
-  - input and submit user information
-  - click the '⟳' button to relaod the users list
-  - Select newly added user from 'Users' dropdown - new user will be at the bottom of the list
-- Add workout from photo
-  - After selecting user, navigate to the the 'Add Workout' tab and select 'From Image'
-  - Choose the correct type of workout then click 'Upload'
-  - Upload a photograph of a Concept2 Erg memory screen. The image must be cropped such that the top and bottom of the digital black box outline surrounding the workout data line up with the top and and bottom of the photo. You will likely need to crop your image before upload to achieve this. Your uploaded image should look like this:
-    ![ergScreen](cr_erg02.jpg)
-    Note: it may take some time for the image to process. Once processed, a form should appear cotaining the extracted data. The fields are editable so user can manually correct any data that was not accurately extracted.
-  - Submit each part of the workout to the workout table
-    _ Workouts are broken down into Summary and sub-workouts  
-     _ The summary shows date, total time, total distance, average split, average stroke rate and average heart rate for the piece \* If adding an interval workout the sub-workouts will correspond to the intervals. If adding a single distance/time workout, sub-workouts will correspond to sub-sections of that workout. For example a single 2km piece may show sub-workout data for each of the four 500m in that 2000m piece.
-  - Once all sub-workouts have been added click 'submit workout' to add the workout to the ErgTrack database
-- Add workout manually
-  - Navigate to 'add workout', select 'Manually'
-  - Fill in the workout form with summary and sub-workout data
-  - Submit workout to ErgTrack database
-- View, Search and Compare Workouts
-  _ Navigate to 'Menu' > 'Workout Log'. This page shows the summary data for all workouts assoicated with the selected user
-  _ VIEW: select a single workout and click 'View Workout Details' to see details about that workout including sub-workout info
-  _ SEARCH: use the filter data row at the top of the workout log to search for workouts based on any parameter
-  _ Compare: Select multiple workouts and click 'Compare' to view a bar chart comparing the splits of each of the selected workouts
 
 ## Build Status
 
