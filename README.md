@@ -22,6 +22,7 @@ I built ergTrack as a way to learn full stack development and because it is a pr
     * Choose the correct type of workout then click 'Upload'
     * Upload a photograph of a Concept2 Erg memory screen. The image must be cropped such that the top and bottom of the digital black box outline surrounding the workout data line up with the top and and bottom of the photo. You will likely need to crop your image before upload to achieve this. Your uploaded image should look like this: 
     ![ergScreen](cr_erg02.jpg)
+    
     Note: it may take some time for the image to process. Once processed, a form should appear cotaining the extracted data. The fields are editable so user can manually correct any data that was not accurately extracted. 
     * Submit each part of the workout to the workout table
             * Workouts are broken down into Summary and sub-workouts  
@@ -40,6 +41,11 @@ I built ergTrack as a way to learn full stack development and because it is a pr
 
 
 ## Build Status
+### As of 02/22/2023
+I removed the app from Render for cost purposes. The app is no longer deployed online. However, you can run the app locally if you desire. 
+
+I am working on a new and impoved version of the ergTrack that will use a React front-end and AWS Textract for OCR. Stay tuned! 
+
 #### As of 11/24/2022
 The app is currently deployed at https://ergtrack-dash.onrender.com/ 
 ### Issues
